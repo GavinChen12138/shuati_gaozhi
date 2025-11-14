@@ -1,30 +1,30 @@
-// base color
-$blue: #3550ff;
-$light-blue: rgb(87, 159, 231);
-$red: #c03639;
-$pink: #e65d6e;
-$green: #30b08f;
-$tiffany: #4ab7bd;
-$yellow: #fec171;
-$panGreen: #30b08f;
+// base color palette tuned for Sober UI design language
+$blue: #2563eb;
+$light-blue: #60a5fa;
+$red: #ef4444;
+$pink: #f472b6;
+$green: #22c55e;
+$tiffany: #2dd4bf;
+$yellow: #fbbf24;
+$panGreen: #16a34a;
 
-$logoBg: #ccc;
-$logoText: #222;
+$logoBg: #0f172a;
+$logoText: #f8fafc;
 // navbar
-$navbarColor: #fff;
+$navbarColor: #ffffff;
 // sidebar
-$menuText: #444;
-$menuActiveText: #0d47a1;
-$subMenuActiveText: #0d47a1; // https://github.com/ElemeFE/element/issues/12951
+$menuText: #1f2937;
+$menuActiveText: #2563eb;
+$subMenuActiveText: #2563eb; // https://github.com/ElemeFE/element/issues/12951
 
-$menuBg: #eee;
-$menuHover: #1295d8;
+$menuBg: #f8f9fe;
+$menuHover: #dbeafe;
 
-$subMenuBg: #eee;
-$subMenuHover: #1295d8;
+$subMenuBg: #eef2ff;
+$subMenuHover: #dbeafe;
 
-$sideBarWidth: 210px;
-$divider-color: #ccc;
+$sideBarWidth: 260px;
+$divider-color: #e2e8f0;
 
 // the :export directive is the magic sauce for webpack
 // https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass

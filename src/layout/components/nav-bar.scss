@@ -1,79 +1,134 @@
 @import "@/styles/variables";
-.navbar {
-  height: 3rem;
-  overflow: hidden;
-  position: relative;
-  background: $navbarColor;
-  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.2);
 
-  .hamburger-container {
-    line-height: 2.8rem;
-    height: 100%;
-    float: left;
-    cursor: pointer;
-    transition: all 0.3s;
-    -webkit-tap-highlight-color: transparent;
+.sober-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--sober-navbar-height);
+  padding: 0 clamp(1rem, 3vw, 2.5rem);
+  background: rgba(248, 250, 252, 0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.7);
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.05);
+}
 
-    &:hover {
-      background: rgba(0, 0, 0, 0.025);
-    }
+.sober-navbar__left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.sober-navbar__hamburger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  width: 44px;
+  border-radius: 16px;
+  background: rgba(37, 99, 235, 0.08);
+  transition: transform 0.25s var(--sober-timing), box-shadow 0.25s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(37, 99, 235, 0.2);
   }
-  .menu-link {
-    color: $menuText;
+}
+
+.sober-navbar__breadcrumb {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  color: rgba(15, 23, 42, 0.6);
+}
+
+.sober-navbar__right {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+.sober-navbar__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;
+  width: 42px;
+  border-radius: 14px;
+  background: rgba(148, 163, 184, 0.12);
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba(37, 99, 235, 0.12);
   }
-  .breadcrumb-container {
-    float: left;
+}
+
+.sober-navbar__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.sober-navbar__auth {
+  display: inline-flex;
+  gap: 0.5rem;
+
+  .sober-link {
+    padding-inline: 0.9rem;
+    font-weight: 600;
+    color: var(--sober-primary);
+  }
+}
+
+.sober-navbar__user-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 120px;
+  color: #0f172a;
+}
+
+.sober-navbar__user-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.sober-navbar__user-role {
+  font-size: 0.78rem;
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.sober-navbar__clock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  color: rgba(15, 23, 42, 0.55);
+}
+
+.sober-navbar__popover {
+  border-radius: var(--sober-radius-md);
+  box-shadow: var(--sober-shadow-soft);
+}
+
+.sober-navbar .sober-link {
+  height: 40px;
+  padding-inline: 0.85rem;
+  font-size: 0.85rem;
+  color: rgba(15, 23, 42, 0.75);
+  background: rgba(148, 163, 184, 0.12);
+
+  &:hover {
+    background: rgba(37, 99, 235, 0.14);
+    color: var(--sober-primary);
+  }
+}
+
+@media (max-width: 960px) {
+  .sober-navbar {
+    padding-inline: 1rem;
   }
 
-  .errLog-container {
-    display: inline-block;
-    vertical-align: top;
-  }
-
-  .right-menu {
-    float: right;
-    margin-right: 2rem;
-    height: 100%;
-    line-height: 3rem;
-
-    &:focus {
-      outline: none;
-    }
-    %right-menu-item-base {
-      display: inline-block;
-      height: 95%;
-      font-size: 1rem;
-      color: $menuText;
-      vertical-align: text-bottom;
-
-      &.hover-effect {
-        cursor: pointer;
-        transition: all 0.3s;
-
-        &:hover {
-          background: rgba(0, 0, 0, 0.025);
-        }
-      }
-    }
-    .right-menu-item {
-      @extend %right-menu-item-base;
-    }
-    .right-menu-2-item {
-      @extend %right-menu-item-base;
-      margin-top: 0.2rem;
-      font-size: 0.5rem;
-      line-height: 1.5rem;
-      color: $menuActiveText;
-    }
-    .avatar-container {
-      cursor: pointer;
-      .user-avatar {
-        cursor: pointer;
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-        transition: all 0.3s ease;
-      }
-    }
+  .sober-navbar__breadcrumb {
+    display: none;
   }
 }

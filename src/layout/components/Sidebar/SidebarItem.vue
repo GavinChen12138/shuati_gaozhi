@@ -1,33 +1,53 @@
 <template>
-  <div v-if="!item.hidden">
+  <div v-if="!item.hidden" class="sober-menu__item" :class="{ 'sober-menu__child': isNest }">
     <app-link
-      v-if="hasOneShowingChild(item.children,item) && (!onlyOneChild.children||onlyOneChild.noShowingChildren)&&!item.alwaysShow"
+      v-if="showSingleChild && (!onlyOneChild.children || onlyOneChild.noShowingChildren) && !item.alwaysShow"
       :to="resolvePath(onlyOneChild.path)"
     >
-      <el-menu-item
-        v-if="onlyOneChild.meta"
-        :index="resolvePath(onlyOneChild.path)"
-        :class="{'submenu-title-noDropdown':!isNest}"
-      >
-        <SvgIcon :icon-class="onlyOneChild.meta.icon||(item.meta&&item.meta.icon)" />
-        <span>{{ item.meta.ctitle||generateTitle(onlyOneChild.meta) }}</span>
-      </el-menu-item>
+      <template #default="{ href, navigate }">
+        <a
+          :href="href"
+          class="sober-menu__trigger"
+          :class="{ 'is-active': isActiveByPath(resolvePath(onlyOneChild.path)) }"
+          @click="navigate"
+        >
+          <span class="sober-menu__icon">
+            <SvgIcon :icon-class="resolveIcon(singleMeta, item.meta)" />
+          </span>
+          <span class="sober-menu__label">{{ resolveMenuLabel(singleMeta, item.meta) }}</span>
+        </a>
+      </template>
     </app-link>
 
-    <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
-      <template v-if="item.meta" slot="title">
-        <SvgIcon :icon-class="item.meta && item.meta.icon" />
-        <span>{{ item.meta.ctitle||generateTitle(item.meta) }}</span>
-      </template>
-      <sidebar-item
-        v-for="child in item.children"
-        :key="child.path"
-        :is-nest="true"
-        :item="child"
-        :base-path="resolvePath(child.path)"
-        class="nest-menu"
-      />
-    </el-submenu>
+    <div v-else class="sober-menu__branch">
+      <button
+        type="button"
+        class="sober-menu__trigger"
+        :class="{ 'is-active': isActiveByPath(resolvePath(item.path)) }"
+        :aria-expanded="isOpen"
+        @click="toggleOpen"
+      >
+        <span class="sober-menu__icon">
+          <SvgIcon :icon-class="resolveIcon(item.meta)" />
+        </span>
+        <span class="sober-menu__label">{{ resolveMenuLabel(item.meta) }}</span>
+        <span class="sober-menu__caret" :class="{ 'is-open': isOpen }">›</span>
+      </button>
+      <transition name="sober-menu-collapse">
+        <div v-show="isOpen" class="sober-menu__children">
+          <div class="sober-menu__children-inner">
+            <sidebar-item
+              v-for="child in item.children"
+              :key="child.path"
+              :is-nest="true"
+              :item="child"
+              :base-path="resolvePath(child.path)"
+              class="sober-menu__child"
+            />
+          </div>
+        </div>
+      </transition>
+    </div>
   </div>
 </template>
 
@@ -58,10 +78,43 @@ export default {
     }
   },
   data() {
-    // To fix https://github.com/serfend/vue-admin-template/issues/237
-    // TODO: refactor with render function
     this.onlyOneChild = null
-    return {}
+    return {
+      isOpen: false
+    }
+  },
+  computed: {
+    showSingleChild() {
+      return this.hasOneShowingChild(this.item.children, this.item)
+    },
+    currentActiveMenu() {
+      const { meta, path } = this.$route
+      if (meta && meta.activeMenu) {
+        return meta.activeMenu
+      }
+      return path
+    },
+    shouldExpandByDefault() {
+      if (!this.item.children || !this.item.children.length) {
+        return false
+      }
+      return this.containsActiveChild(this.item.children)
+    },
+    singleMeta() {
+      return (this.onlyOneChild && this.onlyOneChild.meta) || {}
+    }
+  },
+  watch: {
+    $route() {
+      if (this.item.children && this.item.children.length) {
+        this.isOpen = this.shouldExpandByDefault
+      }
+    }
+  },
+  created() {
+    if (this.item.children && this.item.children.length) {
+      this.isOpen = this.shouldExpandByDefault
+    }
   },
   methods: {
     hasOneShowingChild(children = [], parent) {
@@ -69,16 +122,13 @@ export default {
         if (item.hidden) {
           return false
         } else {
-          // Temp set(will be used if only has one showing child)
           this.onlyOneChild = item
           return true
         }
       })
-      // When there is only one child router, the child router is displayed by default
       if (showingChildren.length === 1) {
         return true
       }
-      // Show parent if there are no child router to display
       if (showingChildren.length === 0) {
         this.onlyOneChild = { ...parent, path: '', noShowingChildren: true }
         return true
@@ -92,7 +142,58 @@ export default {
       if (isExternal(this.basePath)) {
         return this.basePath
       }
-      return `${this.basePath}/${routePath}`
+      const base = (this.basePath || '').replace(/\/+$/, '')
+      const segment = (routePath || '').replace(/^\/+/, '')
+      const merged = [base, segment].filter(Boolean).join('/') || '/'
+      const normalized = merged.replace(/\/+/g, '/')
+      return normalized.startsWith('/') ? normalized : `/${normalized}`
+    },
+    containsActiveChild(children = []) {
+      return children.some(child => {
+        if (child.hidden) {
+          return false
+        }
+        if (child.children && child.children.length) {
+          return this.containsActiveChild(child.children)
+        }
+        return this.isActiveByPath(this.resolvePath(child.path))
+      })
+    },
+    isActiveByPath(path) {
+      if (!path || isExternal(path)) {
+        return false
+      }
+      const normalized = path.replace(/\/$/, '') || '/'
+      const active = (this.currentActiveMenu || '').replace(/\/$/, '') || '/'
+      const current = this.$route.path.replace(/\/$/, '') || '/'
+      return active === normalized || current === normalized
+    },
+    toggleOpen() {
+      this.isOpen = !this.isOpen
+    },
+    resolveMenuLabel(meta = {}, fallback = {}) {
+      if (fallback && fallback.ctitle) {
+        return fallback.ctitle
+      }
+      if (meta.ctitle) {
+        return meta.ctitle
+      }
+      if (meta.title) {
+        return generateTitle(meta)
+      }
+      if (fallback && fallback.title) {
+        return generateTitle(fallback)
+      }
+      return ''
+    },
+    resolveIcon(meta = {}, fallback = {}) {
+      if (meta && meta.icon) {
+        return meta.icon
+      }
+      if (fallback && fallback.icon) {
+        return fallback.icon
+      }
+      return ''
     },
     generateTitle
   }

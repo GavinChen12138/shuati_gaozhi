@@ -1,41 +1,47 @@
 <template>
-  <div class="navbar">
-    <hamburger
-      id="hamburger-container"
-      :is-active="sidebar.opened"
-      class="hamburger-container"
-      @toggleClick="toggleSideBar"
-    />
+  <div class="sober-navbar">
+    <div class="sober-navbar__left">
+      <hamburger
+        id="hamburger-container"
+        :is-active="sidebar.opened"
+        class="sober-navbar__hamburger"
+        @toggleClick="toggleSideBar"
+      />
+      <breadcrumb id="breadcrumb-container" class="sober-navbar__breadcrumb" />
+    </div>
 
-    <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
-    <div v-loading="loading" class="right-menu">
+    <div v-loading="loading" class="sober-navbar__right">
       <template v-if="device !== 'mobile'">
-        <search id="header-search" class="right-menu-item" />
-        <error-log class="errLog-container right-menu-item hover-effect" />
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
+        <search id="header-search" class="sober-navbar__action" />
+        <error-log class="sober-navbar__action" />
+        <screenfull id="screenfull" class="sober-navbar__action" />
       </template>
       <UserPannel ref="userPannel" :user-card-show.sync="userCardShow" />
-      <div v-if="currentUser.data" class="right-menu-2-item" style="color:#000">
-        <div>{{ currentUser.name }}</div>
-        <div>{{ currentUser.data.dutiesName }}</div>
+
+      <div v-if="currentUser.data" class="sober-navbar__user-meta">
+        <span class="sober-navbar__user-name">{{ currentUser.name }}</span>
+        <span class="sober-navbar__user-role">{{ currentUser.data.dutiesName }}</span>
       </div>
-      <div v-if="!hasLogin" class="right-menu-item">
-        <el-link @click="$refs.userPannel.userCardShowing(true)">登录</el-link>
-        <el-link @click="$refs.userPannel.handleReg(true)">注册</el-link>
+
+      <div v-if="!hasLogin" class="sober-navbar__auth">
+        <button type="button" class="sober-link" @click="$refs.userPannel.userCardShowing(true)">登录</button>
+        <button type="button" class="sober-link" @click="$refs.userPannel.handleReg(true)">注册</button>
       </div>
-      <div v-else class="right-menu-item">
-        <el-popover trigger="hover">
+
+      <div v-else class="sober-navbar__actions">
+        <el-popover trigger="hover" popper-class="sober-navbar__popover">
           <BBSMessageBox />
-          <el-link slot="reference">消息</el-link>
+          <button slot="reference" type="button" class="sober-link">消息</button>
         </el-popover>
-        <el-popover trigger="hover">
+        <el-popover trigger="hover" popper-class="sober-navbar__popover">
           <Loading />
-          <el-link slot="reference">收藏</el-link>
+          <button slot="reference" type="button" class="sober-link">收藏</button>
         </el-popover>
       </div>
-      <div v-if="device !== 'mobile'&&currentTime" class="right-menu-2-item">
-        <div>{{ currentTime.split('\n')[0] }}</div>
-        <div>{{ currentTime.split('\n')[1] }}</div>
+
+      <div v-if="device !== 'mobile' && currentTime" class="sober-navbar__clock">
+        <span>{{ currentTime.split('\n')[0] }}</span>
+        <span>{{ currentTime.split('\n')[1] }}</span>
       </div>
     </div>
   </div>
