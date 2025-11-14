@@ -1,0 +1,16 @@
+.sober-blur-surface {
+  backdrop-filter: saturate(180%) blur(14px);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.shadow-soft {
+  box-shadow: var(--sober-shadow-soft);
+}
+
+.text-muted {
+  color: var(--sober-muted);
+}
+
+.text-accent {
+  color: var(--sober-primary);
+}

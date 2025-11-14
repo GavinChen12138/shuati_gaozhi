@@ -1,5 +1,10 @@
 @import "./variables.scss";
+@import "./sober/variables";
+@import "./sober/base";
 @import "./mixin.scss";
+@import "./sober/layout";
+@import "./sober/components";
+@import "./sober/utilities";
 @import "./transition.scss";
 @import "./element-ui.scss";
 @import "./sidebar.scss";

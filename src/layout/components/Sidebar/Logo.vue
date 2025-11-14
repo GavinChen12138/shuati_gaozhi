@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="sidebar-logo-container"
-    :class="{ collapse: collapse }"
-    :style="{background:variables.logoBg,color:variables.logoText}"
-  >
+  <div class="sidebar-logo-container" :class="{ collapse }" :style="logoStyles">
     <div class="sidebar-logo-link">
       <el-image :src="logo" :preview-src-list="[logoMax]" class="sidebar-logo" />
       <transition name="sidebarLogoFade">
@@ -34,6 +30,12 @@ export default {
   computed: {
     variables() {
       return variables
+    },
+    logoStyles() {
+      return {
+        background: `linear-gradient(135deg, ${this.variables.logobg} 0%, rgba(15, 23, 42, 0.92) 100%)`,
+        color: this.variables.logotext
+      }
     }
   }
 }
@@ -52,36 +54,45 @@ export default {
 .sidebar-logo-container {
   position: relative;
   width: 100%;
-  height: 50px;
-  line-height: 50px;
-  text-align: center;
+  padding: 1.25rem 1.5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.18);
 
-  & .sidebar-logo-link {
-    height: 100%;
+  .sidebar-logo-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     width: 100%;
+    justify-content: center;
 
-    & .sidebar-logo {
-      width: 32px;
-      height: 32px;
-      vertical-align: middle;
-      margin-right: 12px;
+    .sidebar-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.25);
     }
 
-    & .sidebar-title {
-      display: inline-block;
+    .sidebar-title {
       margin: 0;
       font-weight: 600;
-      line-height: 50px;
-      font-size: 14px;
-      font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
-      vertical-align: middle;
+      line-height: 1.2;
+      font-size: 1.05rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
     }
   }
 
   &.collapse {
-    .sidebar-logo {
-      margin-right: 0px;
+    padding-inline: 1rem;
+
+    .sidebar-logo-link {
+      justify-content: center;
+      .sidebar-logo {
+        margin-right: 0;
+      }
     }
   }
 }

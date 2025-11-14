@@ -1,13 +1,13 @@
 
 <template>
-  <div>
-    <router-link v-if="!isExternal" :to="to">
-      <slot />
-    </router-link>
-    <a v-else :href="to" target="_blank" rel="noopener">
-      <slot />
-    </a>
-  </div>
+  <router-link v-if="!isExternal" :to="to" custom>
+    <template #default="slotProps">
+      <slot v-bind="slotProps" />
+    </template>
+  </router-link>
+  <a v-else :href="to" target="_blank" rel="noopener">
+    <slot :href="to" :navigate="noop" :is-active="false" :is-exact-active="false" />
+  </a>
 </template>
 
 <script>
@@ -30,6 +30,9 @@ export default {
       },
       immediate: true
     }
+  },
+  methods: {
+    noop() {}
   }
 }
 </script>
